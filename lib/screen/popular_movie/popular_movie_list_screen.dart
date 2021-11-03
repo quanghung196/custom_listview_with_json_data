@@ -60,18 +60,39 @@ class _PopularMovieListState extends State<PopularMovieList> {
     final double itemWidth = size.width / 3;
     final double itemHeight = itemWidth * 4 / 3;
 
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
-        childAspectRatio: itemWidth / itemHeight,
-      ),
-      itemCount: popularMovieResponse.results.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildItemMovieListPoster(popularMovieResponse.results[index]);
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification sn) {
+        if (sn is ScrollUpdateNotification && sn.metrics.pixels == sn.metrics.maxScrollExtent) {
+          _showSnackBar(context, 'end');
+        }
+        return true;
       },
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 4,
+          mainAxisSpacing: 4,
+          childAspectRatio: itemWidth / itemHeight,
+        ),
+        itemCount: popularMovieResponse.results.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildItemMovieListPoster(popularMovieResponse.results[index]);
+        },
+      ),
     );
+
+    // return GridView.builder(
+    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //     crossAxisCount: 3,
+    //     crossAxisSpacing: 4,
+    //     mainAxisSpacing: 4,
+    //     childAspectRatio: itemWidth / itemHeight,
+    //   ),
+    //   itemCount: popularMovieResponse.results.length,
+    //   itemBuilder: (BuildContext context, int index) {
+    //     return _buildItemMovieListPoster(popularMovieResponse.results[index]);
+    //   },
+    // );
   }
 
   Widget _buildItemMovieListPoster(Results results) {
