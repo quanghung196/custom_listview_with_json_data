@@ -1,45 +1,60 @@
 part of 'popular_movie_list_bloc.dart';
 
 @immutable
-abstract class PopularMovieListState {
-  const PopularMovieListState();
+abstract class MovieListState {
+  const MovieListState();
 }
 
-class PopularMovieListInitial extends PopularMovieListState {
-  const PopularMovieListInitial();
+class MovieListInitial extends MovieListState {
+  const MovieListInitial();
 }
 
-class PopularMovieListLoading extends PopularMovieListState {
-  const PopularMovieListLoading();
+class MovieListLoading extends MovieListState {
+  const MovieListLoading();
 }
 
-class PopularMovieListLoaded extends PopularMovieListState {
+class MovieListLoaded extends MovieListState {
   final PopularMovieResponse popularMovieResponse;
 
-  const PopularMovieListLoaded(this.popularMovieResponse);
+  const MovieListLoaded(this.popularMovieResponse);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is PopularMovieListLoaded &&
-        o.popularMovieResponse == popularMovieResponse;
+    return o is MovieListLoaded && o.popularMovieResponse == popularMovieResponse;
   }
 
   @override
   int get hashCode => popularMovieResponse.hashCode;
 }
 
-class PopularMovieListError extends PopularMovieListState {
+class MovieListError extends MovieListState {
   final String message;
 
-  const PopularMovieListError(this.message);
+  const MovieListError(this.message);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is PopularMovieListError && o.message == message;
+    return o is MovieListError && o.message == message;
+  }
+
+  @override
+  int get hashCode => message.hashCode;
+}
+
+class MovieListScrollToBottom extends MovieListState {
+  final String message;
+
+  const MovieListScrollToBottom(this.message);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+
+    return o is MovieListScrollToBottom && o.message == message;
   }
 
   @override

@@ -12,6 +12,7 @@ class TheMovieDBApiRepository extends TheMovieDBApi {
   @override
   Future<PopularMovieResponse> getListPopularMovieByPage(int page) async {
     final response = await _provider.get(TheMovieDBProvider.popularMovieListURL + page.toString());
+    print(PopularMovieResponse.fromJson(response).toString());
     return PopularMovieResponse.fromJson(response);
   }
 

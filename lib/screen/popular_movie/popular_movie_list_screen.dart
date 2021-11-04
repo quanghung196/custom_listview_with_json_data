@@ -18,10 +18,12 @@ class PopularMovieList extends StatefulWidget {
 class _PopularMovieListState extends State<PopularMovieList> {
   static const int firstPage = 1;
   final int _currentPage = firstPage;
+  late PopularMovieListBloc popularMovieListBloc;
 
   @override
   void initState() {
     super.initState();
+    popularMovieListBloc = context.read<PopularMovieListBloc>();
     _getPopularMovieListByPage(context, firstPage);
   }
 
@@ -34,19 +36,23 @@ class _PopularMovieListState extends State<PopularMovieList> {
   }
 
   Widget _buildUI() {
-    return BlocConsumer<PopularMovieListBloc, PopularMovieListState>(
+    return BlocConsumer<PopularMovieListBloc, MovieListState>(
       listener: (context, state) {
-        if (state is PopularMovieListError) {
-          _showSnackBar(context, 'Can not connect to internet');
+        if (state is MovieListError) {
+          _showSnackBar(context, state.message);
+        } else if (state is MovieListScrollToBottom) {
+          _showSnackBar(context, state.message);
         }
       },
       builder: (context, state) {
-        if (state is PopularMovieListInitial) {
+        if (state is MovieListInitial) {
           return const Align(child: CircularProgressIndicator());
-        } else if (state is PopularMovieListLoading) {
+        } else if (state is MovieListLoading) {
           return const Align(child: CircularProgressIndicator());
-        } else if (state is PopularMovieListLoaded) {
+        } else if (state is MovieListLoaded) {
           return _popularMovieList(context, state.popularMovieResponse);
+        } else if (state is MovieListScrollToBottom){
+          return const Align(child: CircularProgressIndicator());
         } else {
           return const Align(child: CircularProgressIndicator());
         }
@@ -63,7 +69,7 @@ class _PopularMovieListState extends State<PopularMovieList> {
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification sn) {
         if (sn is ScrollUpdateNotification && sn.metrics.pixels == sn.metrics.maxScrollExtent) {
-          _showSnackBar(context, 'end');
+          _onMovieListScrollToBottom();
         }
         return true;
       },
@@ -80,19 +86,6 @@ class _PopularMovieListState extends State<PopularMovieList> {
         },
       ),
     );
-
-    // return GridView.builder(
-    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    //     crossAxisCount: 3,
-    //     crossAxisSpacing: 4,
-    //     mainAxisSpacing: 4,
-    //     childAspectRatio: itemWidth / itemHeight,
-    //   ),
-    //   itemCount: popularMovieResponse.results.length,
-    //   itemBuilder: (BuildContext context, int index) {
-    //     return _buildItemMovieListPoster(popularMovieResponse.results[index]);
-    //   },
-    // );
   }
 
   Widget _buildItemMovieListPoster(Results results) {
@@ -108,8 +101,11 @@ class _PopularMovieListState extends State<PopularMovieList> {
   }
 
   void _getPopularMovieListByPage(BuildContext context, int page) {
-    final popularMovieListBloc = context.read<PopularMovieListBloc>();
     popularMovieListBloc.add(GetPopularMovieList(page));
+  }
+
+  void _onMovieListScrollToBottom() {
+    popularMovieListBloc.add(OnMovieListScrollToBottom());
   }
 
   void _goToMovieDetail(BuildContext context) {

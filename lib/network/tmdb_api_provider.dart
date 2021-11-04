@@ -8,16 +8,14 @@ import 'tmdb_exception.dart';
 class TheMovieDBProvider {
   static const String apiKey = 'f64c520a006b21aa8ea0f224091f1bfc';
   static const String baseURL = 'https://api.themoviedb.org/3/';
+
   static const String popularMoviePath = 'movie/popular';
 
   static const String originalImageURL = 'https://image.tmdb.org/t/p/original/';
   static const String thumbImageURL = 'https://image.tmdb.org/t/p/w500/';
 
-  static const String popularMovieListURL = baseURL +
-      popularMoviePath +
-      '?api_key=' +
-      apiKey +
-      '&language=en-US&page=';
+  static const String popularMovieListURL =
+      baseURL + popularMoviePath + '?api_key=' + apiKey + '&language=en-US&page=';
 
   Future<dynamic> get(String url) async {
     var responseJson;

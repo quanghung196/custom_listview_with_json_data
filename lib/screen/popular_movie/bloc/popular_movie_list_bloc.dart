@@ -6,22 +6,24 @@ import 'package:meta/meta.dart';
 part 'popular_movie_list_event.dart';
 part 'popular_movie_list_state.dart';
 
-class PopularMovieListBloc extends Bloc<TheMovieDBListEvent, PopularMovieListState> {
-
+class PopularMovieListBloc extends Bloc<TheMovieDBListEvent, MovieListState> {
   final TheMovieDBApiRepository _theMovieDBApiRepository;
 
-  PopularMovieListBloc(this._theMovieDBApiRepository) : super(const PopularMovieListInitial());
+  PopularMovieListBloc(this._theMovieDBApiRepository) : super(const MovieListInitial());
 
   @override
-  Stream<PopularMovieListState> mapEventToState(TheMovieDBListEvent event) async* {
+  Stream<MovieListState> mapEventToState(TheMovieDBListEvent event) async* {
     if (event is GetPopularMovieList) {
       try {
-        yield const PopularMovieListLoading();
-        var popularMovieListResponse = await _theMovieDBApiRepository.getListPopularMovieByPage(event.page);
-        yield PopularMovieListLoaded(popularMovieListResponse);
-      } on Exception  {
-        yield const PopularMovieListError("Couldn't fetch movie. Is the device online?");
+        yield const MovieListLoading();
+        var popularMovieListResponse =
+        await _theMovieDBApiRepository.getListPopularMovieByPage(event.page);
+        yield MovieListLoaded(popularMovieListResponse);
+      } on Exception {
+        yield const MovieListError("Couldn't fetch movie. Is the device online?");
       }
+    } else if (event is OnMovieListScrollToBottom) {
+      yield const MovieListScrollToBottom('List movie is scrolled to bottom');
     }
   }
 }
