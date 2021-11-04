@@ -9,7 +9,7 @@ class GetPopularMovieList extends TheMovieDBListEvent {
   GetPopularMovieList(this.page);
 }
 
-class OnMovieListScrollToBottom extends TheMovieDBListEvent {
-
-  OnMovieListScrollToBottom();
-}
+// class OnMovieListScrollToBottom extends TheMovieDBListEvent {
+//
+//   OnMovieListScrollToBottom();
+// }

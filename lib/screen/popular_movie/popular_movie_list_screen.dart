@@ -16,15 +16,13 @@ class PopularMovieList extends StatefulWidget {
 }
 
 class _PopularMovieListState extends State<PopularMovieList> {
-  static const int firstPage = 1;
-  final int _currentPage = firstPage;
   late PopularMovieListBloc popularMovieListBloc;
 
   @override
   void initState() {
     super.initState();
     popularMovieListBloc = context.read<PopularMovieListBloc>();
-    _getPopularMovieListByPage(context, firstPage);
+    _getPopularMovieListByPage(popularMovieListBloc.currentPage);
   }
 
   @override
@@ -36,31 +34,30 @@ class _PopularMovieListState extends State<PopularMovieList> {
   }
 
   Widget _buildUI() {
-    return BlocConsumer<PopularMovieListBloc, MovieListState>(
-      listener: (context, state) {
-        if (state is MovieListError) {
-          _showSnackBar(context, state.message);
-        } else if (state is MovieListScrollToBottom) {
-          _showSnackBar(context, state.message);
-        }
-      },
-      builder: (context, state) {
-        if (state is MovieListInitial) {
-          return const Align(child: CircularProgressIndicator());
-        } else if (state is MovieListLoading) {
-          return const Align(child: CircularProgressIndicator());
-        } else if (state is MovieListLoaded) {
-          return _popularMovieList(context, state.popularMovieResponse);
-        } else if (state is MovieListScrollToBottom){
-          return const Align(child: CircularProgressIndicator());
-        } else {
-          return const Align(child: CircularProgressIndicator());
-        }
-      },
+    return Stack(
+      children: <Widget>[
+        BlocConsumer<PopularMovieListBloc, MovieListState>(
+          listener: (context, state) {
+            if (state is MovieListError) {
+              _showSnackBar(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            return _popularMovieList(context);
+          },
+        ),
+        BlocBuilder<PopularMovieListBloc, MovieListState>(builder: (context, state) {
+          if (state is MovieListInitial || state is MovieListLoading) {
+            return const Align(child: CircularProgressIndicator());
+          } else {
+            return Container();
+          }
+        }),
+      ],
     );
   }
 
-  Widget _popularMovieList(BuildContext context, PopularMovieResponse popularMovieResponse) {
+  Widget _popularMovieList(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
     final double itemWidth = size.width / 3;
@@ -80,18 +77,18 @@ class _PopularMovieListState extends State<PopularMovieList> {
           mainAxisSpacing: 4,
           childAspectRatio: itemWidth / itemHeight,
         ),
-        itemCount: popularMovieResponse.results.length,
+        itemCount: popularMovieListBloc.results.length,
         itemBuilder: (BuildContext context, int index) {
-          return _buildItemMovieListPoster(popularMovieResponse.results[index]);
+          return _buildItemMovieListPoster(popularMovieListBloc.results[index]);
         },
       ),
     );
   }
 
-  Widget _buildItemMovieListPoster(Results results) {
+  Widget _buildItemMovieListPoster(MovieDetailResponse results) {
     return GestureDetector(
       onTap: () {
-        _goToMovieDetail(context);
+        _goToMovieDetail(context, results.id);
       },
       child: Image.network(
         results.loadThumbPoster(results.posterPath),
@@ -100,18 +97,19 @@ class _PopularMovieListState extends State<PopularMovieList> {
     );
   }
 
-  void _getPopularMovieListByPage(BuildContext context, int page) {
+  void _getPopularMovieListByPage(int page) {
     popularMovieListBloc.add(GetPopularMovieList(page));
   }
 
   void _onMovieListScrollToBottom() {
-    popularMovieListBloc.add(OnMovieListScrollToBottom());
+    popularMovieListBloc.currentPage++;
+    _getPopularMovieListByPage(popularMovieListBloc.currentPage);
   }
 
-  void _goToMovieDetail(BuildContext context) {
+  void _goToMovieDetail(BuildContext context, int movieID) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MovieDetail()),
+      MaterialPageRoute(builder: (context) => MovieDetail(movieID: movieID)),
     );
   }
 

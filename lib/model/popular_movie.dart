@@ -3,20 +3,20 @@ import 'package:json_annotation/json_annotation.dart';
 
 
 @JsonSerializable(explicitToJson: true)
-class PopularMovieResponse {
+class MovieResponse {
   late int page;
-  late List<Results> results;
+  late List<MovieDetailResponse> movieDetail;
   late int totalPages;
   late int totalResults;
 
-  PopularMovieResponse(this.page, this.results, this.totalPages, this.totalResults);
+  MovieResponse(this.page, this.movieDetail, this.totalPages, this.totalResults);
 
-  PopularMovieResponse.fromJson(Map<String, dynamic> json) {
+  MovieResponse.fromJson(Map<String, dynamic> json) {
     page = json['page'];
     if (json['results'] != null) {
-      results = <Results>[];
+      movieDetail = <MovieDetailResponse>[];
       json['results'].forEach((v) {
-        results.add(Results.fromJson(v));
+        movieDetail.add(MovieDetailResponse.fromJson(v));
       });
     }
     totalPages = json['total_pages'];
@@ -25,12 +25,12 @@ class PopularMovieResponse {
 
   @override
   String toString() {
-    return 'Movie{page: $page, results: $results, totalPages: $totalPages, totalResults: $totalResults}';
+    return 'Movie{page: $page, results: $movieDetail, totalPages: $totalPages, totalResults: $totalResults}';
   }
 }
 
 @JsonSerializable()
-class Results {
+class MovieDetailResponse {
   late bool adult;
   late String backdropPath;
   late List<int> genreIds = [];
@@ -46,7 +46,7 @@ class Results {
   late double voteAverage;
   late int voteCount;
 
-  Results(
+  MovieDetailResponse(
       this.adult,
       this.backdropPath,
       this.genreIds,
@@ -66,7 +66,7 @@ class Results {
     return TheMovieDBProvider.thumbImageURL + posterPath;
   }
 
-  Results.fromJson(Map<String, dynamic> json) {
+  MovieDetailResponse.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
     backdropPath = json['backdrop_path'];
     genreIds = json['genre_ids'].cast<int>();
