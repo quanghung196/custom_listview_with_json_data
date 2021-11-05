@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_listview_with_json_data/model/popular_movie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -90,8 +91,8 @@ class _PopularMovieListState extends State<PopularMovieList> {
       onTap: () {
         _goToMovieDetail(context, results.id);
       },
-      child: Image.network(
-        results.loadThumbPoster(results.posterPath),
+      child: CachedNetworkImage(
+        imageUrl: results.loadThumbPoster(results.posterPath),
         fit: BoxFit.fitWidth,
       ),
     );
