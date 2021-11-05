@@ -12,7 +12,7 @@ class TheMovieDBProvider {
   static const String popularMoviePath = 'movie/popular';
 
   static const String originalImageURL = 'https://image.tmdb.org/t/p/original/';
-  static const String thumbImageURL = 'https://image.tmdb.org/t/p/w500/';
+  static const String thumbImageURL = 'https://image.tmdb.org/t/p/w500';
 
   static const String popularMovieListURL =
       baseURL + popularMoviePath + '?api_key=' + apiKey + '&language=en-US&page=';
@@ -31,7 +31,7 @@ class TheMovieDBProvider {
   dynamic _tmdbResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
-        var responseJson = json.decode(response.body.toString());
+        var responseJson = json.decode(response.body);
         return responseJson;
       case 400:
         throw BadRequestException(response.body.toString());

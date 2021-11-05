@@ -22,8 +22,8 @@ class PopularMovieListBloc extends Bloc<TheMovieDBListEvent, MovieListState> {
         yield const MovieListLoading();
         var popularMovieListResponse =
             await _theMovieDBApiRepository.getListPopularMovieByPage(event.page);
-        results.addAll(popularMovieListResponse.movieDetail);
-        yield MovieListLoaded(popularMovieListResponse.movieDetail);
+        results.addAll(popularMovieListResponse);
+        yield MovieListLoaded(popularMovieListResponse);
       } on Exception {
         yield const MovieListError("Couldn't fetch movie. Is the device online?");
       }
