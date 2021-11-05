@@ -19,9 +19,7 @@ class PopularMovieListBloc extends Bloc<TheMovieDBListEvent, MovieListState> {
   Stream<MovieListState> mapEventToState(TheMovieDBListEvent event) async* {
     if (event is GetPopularMovieList) {
       try {
-        //if (currentPage == firstPage) {
-          yield const MovieListLoading();
-        //}
+        yield const MovieListLoading();
         var popularMovieListResponse =
             await _theMovieDBApiRepository.getListPopularMovieByPage(event.page);
         results.addAll(popularMovieListResponse.movieDetail);
@@ -30,8 +28,5 @@ class PopularMovieListBloc extends Bloc<TheMovieDBListEvent, MovieListState> {
         yield const MovieListError("Couldn't fetch movie. Is the device online?");
       }
     }
-    // else if (event is OnMovieListScrollToBottom) {
-    //   yield const MovieListScrollToBottom('List movie is scrolled to bottom');
-    // }
   }
 }

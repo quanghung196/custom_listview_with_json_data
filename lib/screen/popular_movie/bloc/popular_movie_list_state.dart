@@ -44,19 +44,3 @@ class MovieListError extends MovieListState {
   @override
   int get hashCode => message.hashCode;
 }
-
-// class MovieListScrollToBottom extends MovieListState {
-//   final String message;
-//
-//   const MovieListScrollToBottom(this.message);
-//
-//   @override
-//   bool operator ==(Object o) {
-//     if (identical(this, o)) return true;
-//
-//     return o is MovieListScrollToBottom && o.message == message;
-//   }
-//
-//   @override
-//   int get hashCode => message.hashCode;
-// }
